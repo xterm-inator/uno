@@ -101,7 +101,6 @@ export default {
   },
 
   equals(a, b) {
-    console.log('equals?', a, b, a && b && a.color == b.color && a.type == b.type);
     return a && b && a.color == b.color && a.type == b.type;
   },
 

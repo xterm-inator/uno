@@ -71,7 +71,7 @@
         width: 100%;
         text-align: center;
         font-weight: 900;
-        font-size: 48px;
+        font-size: 40px;
         top: 50%;
         transform: translateY(-50%);
       }

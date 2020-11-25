@@ -49,7 +49,6 @@ export default class Connection {
   }
 
   joinMatch(matchId) {
-    console.log('joinMatch', matchId);
     this.matchId = matchId;
   }
 
@@ -87,4 +86,4 @@ export default class Connection {
   static get(id) {
     return connections.filter(connection => connection.id == id)[0];
   }
-}  
+}

@@ -112,7 +112,6 @@
         Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
         Store.set('playerId', this.playerId);
 
-        console.log('store player = ', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
 
         this.$router.push({
           path: this.$network.online ? '/game' : '/game/offline'

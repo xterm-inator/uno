@@ -1,14 +1,14 @@
 <template>
   <div class="stack">
     <Card
-      v-for="(card, i) in stack"
+      v-for="(card, i) in topCards"
       :key="'field-' + i"
       :selectable="false"
       :animateDisabled="true"
       :color="card.color"
       :type="card.type"
-      :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(i, stack.length) + ') translate(-50%, -50%)' }"
-      v-if="i < 8" />
+      :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(i, stack.length) + ') translate(-100%, -50%)' }"
+    />
   </div>
 </template>
 
@@ -19,8 +19,18 @@
 
   export default {
     name: 'CardStack',
-    components: { Card },
+    components: {
+      Card
+    },
+
     props: ['stack'],
+
+    computed: {
+      topCards () {
+        return this.stack.filter((card, index) => index < 8)
+      }
+    },
+
     methods: {
       getStackRotation: PersistentRotation.getRotation.bind(PersistentRotation)
     }
@@ -30,7 +40,7 @@
 <style lang="scss" scoped>
   .stack {
     position: absolute;
-    left: 50%;
+    left: 45%;
     top: 50%;
     transform: translate(-50%, -50%);
 

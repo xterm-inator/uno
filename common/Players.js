@@ -9,7 +9,8 @@ export default {
         human: player.human,
         remote: player.remote,
         selectedCardIndex: -1,
-        hand: DeckBuilder.createHand(deck)
+        hand: DeckBuilder.createHand(deck),
+        drinks: 0
       }
     });
   }

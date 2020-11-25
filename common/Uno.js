@@ -2,6 +2,7 @@ import DeckBuilder from './DeckBuilder';
 import Players from './Players';
 import Rules from './Rules';
 import UnoState from './UnoState';
+import { clone } from 'lodash';
 
 export default class {
   constructor(playerConfig, emit) {
@@ -18,7 +19,9 @@ export default class {
     this.boardDirection = +1;
     this.manualColor = null;
     this.currentPlayer = this.players[0].id;
+    this.currentPickupCount = 0;
     this.nextQueued = false;
+    this.currentStack = 0;
 
     this.emit = emit;
   }
@@ -47,13 +50,18 @@ export default class {
   }
 
   playCard(playerId, card) {
-    if(Rules.isLegal(this.topStack, this.manualColor, card)) {
+    if(Rules.isLegal(this.topStack, this.manualColor, card, this.currentStack > 0)) {
       this.stack.unshift(card);
       this.secondaryDeck.push(card);
 
       let spliceIndex = DeckBuilder.indexOf(this.getPlayer(playerId).hand, card);
       this.getPlayer(playerId).hand.splice(spliceIndex, 1);
       this.getPlayer(playerId).selectedCardIndex = -1;
+
+      if (this.currentPickupCount > 0) {
+        this.emit('drink', { name: this.getPlayer(playerId).name, drinks: this.currentPickupCount })
+        this.currentPickupCount = 0
+      }
 
       if(this.playSideEffects(playerId, card) === true) return;
 
@@ -62,57 +70,127 @@ export default class {
   }
 
   playSideEffects(playerId, card) {
-    if(card.type == 'skip') {
+    if(card.type === 'skip') {
       this.nextTurn(true);
     }
-    if(card.type == 'reverse') {
+    if(card.type === 'reverse') {
       this.boardDirection *= -1;
-      if(this.players.length == 2) {
+      if(this.players.length === 2) {
         this.nextTurn(true);
       }
     }
-    if(card.type == '+2') {
-      this.draw(this.nextPlayer, 2);
-      this.nextTurn(true);
+    if(card.type === '+2') {
+      // check if the next player has the same card before giving it to them to allow stacking
+      if (this.getPlayer(this.nextPlayer).hand.filter(playerCard => playerCard.type === card.type).length === 0) {
+        this.draw(this.nextPlayer, (this.currentStack + 1) * 2)
+        this.emit('drink', { name: this.getPlayer(this.nextPlayer).name, drinks: (this.currentStack + 1) * 2})
+        this.currentStack = 0
+        this.nextTurn(true, true);
+      } else {
+        this.currentStack++
+      }
     }
-    if(card.type == 'wild' || card.type == 'wild+4') {
+    if(card.type === 'wild' || card.type === 'wild+4') {
       this.manualColor = null;
 
-      if(card.type == 'wild+4') {
-        this.draw(this.nextPlayer, 4);
-        this.nextTurn(true, true); // TODO verify still works on multiplayer
+      if(card.type === 'wild+4') {
+        // check if the next player has the same card before giving it to them to allow stacking
+        if (this.getPlayer(this.nextPlayer).hand.filter(playerCard => playerCard.type === card.type).length === 0) {
+          this.draw(this.nextPlayer, (this.currentStack + 1)  * 4)
+          this.emit('drink', { name: this.getPlayer(this.nextPlayer).name, drinks: (this.currentStack + 1) * 4})
+          this.currentStack = 0
+          this.nextTurn(true, true);
+        } else {
+          this.currentStack++
+        }
       }
-      
+
       this.emit('needColor');
 
       return true;
     }
+
+    if (card.type === '7') {
+      this.emit('needPlayer')
+      return true
+    }
+    if (card.type === '0') {
+      this.rotateCards()
+    }
   }
 
-  setManualColor(color) {
+  setManualColor (color) {
     this.manualColor = color;
     this.nextTurn();
   }
 
-  draw(playerId, n = 1) {
-    if(this.deck.length < n) {
-      DeckBuilder.shuffleDeck(this.secondaryDeck);
+  setManualPlayer (playerId) {
+    const currentHand = clone(this.getPlayer(this.currentPlayer).hand)
+    this.getPlayer(this.currentPlayer).hand = clone(this.getPlayer(playerId).hand)
+    this.getPlayer(playerId).hand = currentHand
 
+    this.nextTurn();
+  }
+
+  rotateCards () {
+    let hands = []
+
+    this.players.forEach((player) => {
+        hands.push(clone(player.hand))
+    })
+
+    if (this.boardDirection > 0) {
+      this.players.forEach((player, index) => {
+        let useIndex = index - 1
+
+        if (useIndex < 0) {
+          useIndex = this.players.length - 1
+        }
+        this.players[index].hand = clone(hands[useIndex])
+      })
+    } else {
+      this.players.forEach((player, index) => {
+        let useIndex = index + 1
+
+        if (useIndex === this.players.length) {
+          useIndex = 0
+        }
+        this.players[index].hand = clone(hands[useIndex])
+      })
+    }
+  }
+
+  draw (playerId, n = 1) {
+    if(this.deck.length < n) {
       for(let i = 0; i < this.secondaryDeck.length; i++) {
-        this.deck.unshift(this.secondaryDeck[i]);
+        this.deck.unshift(clone(this.secondaryDeck[i]));
       }
 
-      this.secondaryDeck = [];
+      this.secondaryDeck = []
+
+      this.stack.splice(1, this.stack.length - 1)
+
+      DeckBuilder.shuffleDeck(this.deck);
+
+      this.emit('drink', { name: this.getPlayer(this.currentPlayer).name, drinks: 'finish' })
     }
 
     for(let i = 0; i < n; i++) {
       const drawIndex = Math.floor(Math.random() * this.deck.length);
-      this.getPlayer(playerId).hand.push(this.deck[drawIndex]);
+      let card = this.deck[drawIndex]
+      card.pickedUp = true
+      this.getPlayer(playerId).hand.push(card);
       this.deck.splice(drawIndex, 1);
     }
+
+    if (n === 1) {
+      this.currentPickupCount++
+    }
+
+    this.emit('draw')
   }
 
-  nextTurn(isEffect = false, delayUntilNextCall = false) {
+  nextTurn (isEffect = false, delayUntilNextCall = false) {
     if(this.nextQueued) {
       this.nextQueued = false;
       this.nextTurn(true);
@@ -123,11 +201,13 @@ export default class {
       return;
     }
 
-    if(this.getPlayer(this.currentPlayer).hand.length == 0) {
+    if(this.getPlayer(this.currentPlayer).hand.length === 0) {
       this.emit('win', this.currentPlayer);
       this.currentPlayer = null;
       return;
     }
+
+    this.getPlayer(this.currentPlayer).hand.forEach(card => card.pickedUp = false)
 
     this.currentPlayer = this.nextPlayer;
 
@@ -136,35 +216,35 @@ export default class {
     }
   }
 
-  remoteSetState(unoState) {
+  remoteSetState (unoState) {
     UnoState.apply(this, unoState);
   }
 
-  remoteSetPlayerHand(id, hand) {
+  remoteSetPlayerHand (id, hand) {
     this.getPlayer(id).hand = hand;
   }
 
-  remoteSetPlayerHandLength(id, length) {
+  remoteSetPlayerHandLength (id, length) {
     this.getPlayer(id).hand = UnoState.generateHandWithLength(length);
   }
 
-  remoteSetPlayerSelectedCardIndex(id, index)  {
+  remoteSetPlayerSelectedCardIndex (id, index)  {
     this.getPlayer(id).selectedCardIndex = index;
   }
 
-  remoteSetCurrentPlayer(id) {
+  remoteSetCurrentPlayer (id) {
     this.currentId = id;
   }
 
-  remoteSetBoardDirection(direction) {
+  remoteSetBoardDirection (direction) {
     this.boardDirection = direction;
   }
 
-  remoteSetManualColor(color) {
+  remoteSetManualColor (color) {
     this.manualColor = color;
   }
 
-  remoteSetStack(stack) {
+  remoteSetStack (stack) {
     this.stack = stack;
   }
 }

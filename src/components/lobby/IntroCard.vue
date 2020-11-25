@@ -19,7 +19,7 @@
     flex-direction: row;
     align-items: center;
     background-color: white;
-    
+
     .koala {
       height: 200px;
       width: 200px;

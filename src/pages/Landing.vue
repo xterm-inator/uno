@@ -2,12 +2,12 @@
   <div class="landing-container">
     <div class="landing-layout">
       <div class="landing-content">
-        <h1>Uno!</h1>
+        <h1>Drinking Uno!</h1>
         <p>
           A fun place to play Uno with your friends<br/>(and koala enthusiasts)
         </p>
         <div class="btn-container">
-          <router-link to="/lobby/offline" class="vbtn vbtn-transparent">Play Offline</router-link>
+<!--          <router-link to="/lobby/offline" class="vbtn vbtn-transparent">Play Offline</router-link>-->
           <router-link to="/lobby" class="vbtn vbtn-large vbtn-blue">Play Online</router-link>
         </div>
         <div class="footer-links">
@@ -21,23 +21,21 @@
 </template>
 
 <script>
-  import DeckBuilder from '@/../common/DeckBuilder';
-  import Card from '@/components/Card';
+import DeckBuilder from '@/../common/DeckBuilder';
 
-  export default {
-    name: 'Library',
-    components: { Card },
-    mounted() {
-      const deck = DeckBuilder.createDeck();
-      DeckBuilder.shuffleDeck(deck);
-      this.deck = deck;
-    },
-    data () {
-      return {
-        deck: []
-      }
+export default {
+  name: 'Library',
+  mounted() {
+    const deck = DeckBuilder.createDeck();
+    DeckBuilder.shuffleDeck(deck);
+    this.deck = deck;
+  },
+  data () {
+    return {
+      deck: []
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -79,7 +77,7 @@
 
         .btn-container {
           margin-top: 16px;
-        } 
+        }
 
         .footer-links {
           position: absolute;
@@ -106,7 +104,7 @@
 
       .illustration {
         height: 100%;
-      }     
+      }
     }
   }
 </style>

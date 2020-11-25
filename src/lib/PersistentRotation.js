@@ -10,11 +10,9 @@ export default {
   getRotation(index, length) {
     const key = this.getKey(index, length);
     if(this.hasKey(key)) {
-      console.log('hasKey' + key);
       return this.cache[key];
     }
     else {
-      console.log('no hasKey' + key);
       const rotation = this.getRandomInt(-45, 45) + 'deg';
       this.cache[key] = rotation;
       return rotation;

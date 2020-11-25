@@ -10,7 +10,7 @@ export default {
     return store[key];
   },
   has(key) {
-    return store.hasOwnProperty(key);
+    return Object.prototype.hasOwnProperty.call(store, key)
   },
   remove(key) {
     delete store[key];

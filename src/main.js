@@ -1,6 +1,7 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue';
+import Vue from 'vue'
+import App from './App.vue'
+
+Vue.config.productionTip = false
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlusCircle, faRocket, faTimesCircle, faTimes, faRobot, faGrinBeam, faCrown, faShareSquare, faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -10,19 +11,13 @@ library.add(faPlusCircle, faRocket, faTimesCircle, faTimes, faRobot, faGrinBeam,
 import VueChatScroll from 'vue-chat-scroll'
 Vue.use(VueChatScroll)
 
-import App from './App';
 import router from './router';
 import network from './mixins/network';
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
-Vue.use(network, { local: false });
+Vue.use(network, { local: true });
 
-Vue.config.productionTip = false
-
-/* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  render: h => h(App),
   router,
-  components: { App },
-  template: '<App/>'
-})
+}).$mount('#app')

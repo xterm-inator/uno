@@ -1,10 +1,9 @@
 import DeckBuilder from '../../common/DeckBuilder';
+import Rules from '../../common/Rules'
 
 export default {
   apply: (socket, connection) => {
     socket.on('draw', () => {
-      console.log('drawing...');
-
       if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
         return;
@@ -19,6 +18,11 @@ export default {
       const uno = match.getUno();
       const id = connection.getId();
 
+      if(Rules.hasValidMove(uno.topStack, uno.manualColor, uno.getPlayer(id).hand)) {
+        socket.emit('onError', 'If you can play you have to play');
+        return;
+      }
+
       uno.draw(id);
 
       match.emitAll('setPlayerHandLength', { id, length: uno.getPlayer(id).hand.length });
@@ -26,8 +30,6 @@ export default {
     });
 
     socket.on('playCard', card => {
-      console.log('drawing...');
-
       if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
         return;
@@ -87,6 +89,22 @@ export default {
       }
 
       connection.getMatch().onUserSelectColor(color);
+    });
+
+    socket.on('userSelectPlayer', playerId => {
+      if(!connection.inMatch() || !connection.getMatch().isRunning())  {
+        socket.emit('onError', 'You are not in a running match.');
+        return;
+      }
+
+      if(!connection.getMatch().isWaitingForInputFrom(connection.getId())) {
+        socket.emit('onError', 'You cannot select a color right now.');
+        return;
+      }
+
+      // TODO: check is valid player
+
+      connection.getMatch().onUserSelectPlayer(playerId);
     });
 
     socket.on('startGame', () => {

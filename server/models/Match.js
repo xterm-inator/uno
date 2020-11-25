@@ -66,15 +66,18 @@ export default class Match {
       this.waitingForInputFrom = this.getCurrentPlayer().player.getId();
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
-    }
-    else if(event == 'needColor' && !this.getCurrentPlayer().human) {
+    } else if(event == 'needColor' && !this.getCurrentPlayer().human) {
       this.onUserSelectColor(AiPlayer.selectColor(this.getUno().getPlayer(this.getUno().currentPlayer).hand));
-    }
-    else if(event == 'win') {
+    } else if(event == 'needPlayer' && this.getCurrentPlayer().human) {
+      this.waitingForInputFrom = this.getCurrentPlayer().player.getId();
+      this.waitingForUserInput = true;
+      this.getCurrentPlayer().player.emit('onGameEmit', event);
+    } else if(event == 'win') {
       this.emitAll('onWin', data);
       this.emitUnoUpdateAll();
-    }
-    else if(event == 'nextTurn') {
+    } else if (event === 'draw') {
+      this.emitUnoUpdateAll();
+    } else if(event == 'nextTurn') {
       if(!this.getCurrentPlayer().human) {
         const uno = this.getUno();
         const player = uno.getPlayer(uno.currentPlayer);
@@ -102,6 +105,12 @@ export default class Match {
           chooseCard
         );
       }
+    } else if (event === 'drink') {
+      if (data.drinks === 'finish') {
+        this.sendMessage('Server', 'notification', `${data.name} must finish their drink`)
+      } else {
+        this.sendMessage('Server', 'notification', `${data.name} drinks ${data.drinks}`)
+      }
     }
   }
 
@@ -114,6 +123,13 @@ export default class Match {
     this.waitingForInputFrom = null;
     this.waitingForUserInput = false;
     this.getUno().setManualColor(color);
+    this.emitUnoUpdateAll();
+  }
+
+  onUserSelectPlayer(playerId) {
+    this.waitingForInputFrom = null;
+    this.waitingForUserInput = false;
+    this.getUno().setManualPlayer(playerId);
     this.emitUnoUpdateAll();
   }
 
@@ -189,7 +205,7 @@ export default class Match {
     const result = this.players
       .map((player, index) => { return { ...player, index: index }})
       .filter(player => player.player && player.player.getId() == playerId)[0];
-    
+
     if(result) {
       this.removePlayerAtIndex(result.index);
     }
@@ -215,7 +231,7 @@ export default class Match {
       if(this.getAdmins().length == 0) {
         this.players.filter(player => player.human)[0].admin = true;
       }
-      
+
       this.emitUpdate();
     }
     else {

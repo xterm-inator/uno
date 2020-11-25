@@ -51,7 +51,6 @@
         this.$refs.spinCanvas.height = window.innerHeight;
       },
       flipDirection() {
-        console.log('flip')
         this.direction = this.direction * -1;
       },
       getWidth() {

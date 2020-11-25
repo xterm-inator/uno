@@ -43,11 +43,10 @@ export default {
     },
     getStatus(match) {
       const numOpen = this.getOpenSpots(match);
-      const numSlots = match.players.length;
-      if(numOpen == 0) {
+      if(numOpen === 0) {
         return 'Full';
       }
-      else if(numOpen == 1) {
+      else if(numOpen === 1) {
         return '1 slot open';
       }
       else {
@@ -64,9 +63,9 @@ export default {
     sortedMatches() {
       const res = [];
       const currentMatchName = (this.currentMatch || {}).name;
-      res.push(...this.matches.filter(match => match.name == currentMatchName));
-      res.push(...this.matches.filter(match => this.getOpenSpots(match) > 0 && match.name != currentMatchName));
-      res.push(...this.matches.filter(match => this.getOpenSpots(match) == 0 && match.name != currentMatchName));
+      res.push(...this.matches.filter(match => match.name === currentMatchName));
+      res.push(...this.matches.filter(match => this.getOpenSpots(match) > 0 && match.name !== currentMatchName));
+      res.push(...this.matches.filter(match => this.getOpenSpots(match) === 0 && match.name !== currentMatchName));
       return res;
     },
     online() {
