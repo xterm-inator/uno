@@ -2,12 +2,10 @@ import VueSocketio from 'vue-socket.io';
 import router from '../router';
 
 export default {
-  install(Vue, options) {
+  install(Vue) {
     const $network = {
       get baseUrl() {
-        return !options.local ?
-          'https://playuno.app' :
-          'http://localhost:8080';
+        return process.env.VUE_APP_BASE_URL
       },
 
       get offline() {
@@ -28,12 +26,7 @@ export default {
       },
 
       setupSocketio() {
-        if(!options.local) {
-          Vue.use(VueSocketio, 'https://playuno.app', { path: '/socket/socket.io' });
-        }
-        else {
-          Vue.use(VueSocketio, 'http://localhost:3000');
-        }
+        Vue.use(VueSocketio, process.env.VUE_APP_SERVER_URL);
       }
     };
 
