@@ -62,10 +62,10 @@
 </template>
 
 <script>
-import AiPlayer from '@/../common/AiPlayer';
+import AiPlayer from 'common/AiPlayer';
 import Store from '@/Store';
-import Rules from '@/../common/Rules';
-import Uno from '@/../common/Uno';
+import Rules from 'common/Rules';
+import Uno from 'common/Uno';
 
 import Card from '@/components/Card';
 import CardStack from '@/components/CardStack';

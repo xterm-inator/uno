@@ -1,0 +1,23 @@
+version: '2'
+volumes:
+  dbdata1:
+services:
+  vue:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend/:/opt/app
+      - /opt/node_modules
+    user: node
+  server:
+    build:
+      context: ./frontend
+      dockerfile: server.dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/:/opt/app
+      - /opt/node_modules
+    user: node

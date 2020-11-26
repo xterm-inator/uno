@@ -31,8 +31,8 @@
   import MatchView from '@/components/lobby/MatchView';
   import PlayerDetail from '@/components/lobby/PlayerDetail';
 
-  import { generateName } from '@/../common/NameGenerator';
-  import PlayerAdapter from '@/../common/PlayerAdapter';
+  import { generateName } from 'common/NameGenerator';
+  import PlayerAdapter from 'common/PlayerAdapter';
   import Store from '@/Store';
 
   export default {

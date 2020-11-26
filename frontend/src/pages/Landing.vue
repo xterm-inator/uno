@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import DeckBuilder from '@/../common/DeckBuilder';
+import DeckBuilder from 'common/DeckBuilder';
 
 export default {
   name: 'Library',
