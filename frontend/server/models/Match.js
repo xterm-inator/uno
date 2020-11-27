@@ -131,7 +131,12 @@ export default class Match {
   onUserSelectPlayer(playerId) {
     this.waitingForInputFrom = null;
     this.waitingForUserInput = false;
-    this.getUno().setManualPlayer(playerId);
+
+    let uno = this.getUno()
+    uno.setManualPlayer(playerId);
+    uno.players.forEach(player => {
+      player.hand.forEach(card => card.pickedUp = false)
+    })
     this.emitUnoUpdateAll();
   }
 

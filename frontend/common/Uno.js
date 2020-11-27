@@ -136,7 +136,9 @@ export default class {
     let hands = []
 
     this.players.forEach((player) => {
-        hands.push(clone(player.hand))
+      player.hand.forEach(card => card.pickedUp = false)
+
+      hands.push(clone(player.hand))
     })
 
     if (this.boardDirection > 0) {
