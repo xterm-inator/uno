@@ -1,5 +1,6 @@
-import DeckBuilder from './DeckBuilder';
-import Rules from './Rules';
+import DeckBuilder from './DeckBuilder'
+import Rules from './Rules'
+import { sortBy } from 'lodash'
 
 export default {
   animationConfig: {
@@ -85,6 +86,11 @@ export default {
 
     return maxColor;
   },
+
+  selectPlayer: function(players) {
+    return sortBy(players, player => player.hand.length)[0].id
+  },
+
   chooseRandom: function(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }

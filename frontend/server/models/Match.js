@@ -72,6 +72,8 @@ export default class Match {
       this.waitingForInputFrom = this.getCurrentPlayer().player.getId();
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
+    } else if(event == 'needPlayer' && !this.getCurrentPlayer().human) {
+      this.onUserSelectPlayer(AiPlayer.selectPlayer(this.getUno().getPlayers()));
     } else if(event == 'win') {
       this.emitAll('onWin', data);
       this.emitUnoUpdateAll();
