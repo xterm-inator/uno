@@ -111,10 +111,16 @@ export default class {
     }
 
     if (card.type === '7') {
+      if (this.checkWin()) {
+        return
+      }
       this.emit('needPlayer')
       return true
     }
     if (card.type === '0') {
+      if (this.checkWin()) {
+        return
+      }
       this.rotateCards()
     }
   }
@@ -190,6 +196,14 @@ export default class {
     }
 
     this.emit('draw')
+  }
+
+  checkWin () {
+    if(this.getPlayer(this.currentPlayer).hand.length === 0) {
+      this.emit('win', this.currentPlayer);
+      this.currentPlayer = null;
+      return true
+    }
   }
 
   nextTurn (isEffect = false, delayUntilNextCall = false) {
