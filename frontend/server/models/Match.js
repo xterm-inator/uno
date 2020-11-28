@@ -109,10 +109,14 @@ export default class Match {
       }
     } else if (event === 'drink') {
       if (data.drinks === 'finish') {
-        this.sendMessage('Server', 'notification', `${data.name} must finish their drink`)
+        this.sendMessage('Server', 'notification', `${data.player.name} must finish their drink`)
       } else {
-        this.sendMessage('Server', 'notification', `${data.name} drinks ${data.drinks}`)
+        this.sendMessage('Server', 'notification', `${data.player.name} drinks ${data.drinks}`)
       }
+
+      data.player.drinks += data.drinks
+
+      this.emitDrink(this.getPlayer(data.player.id).player, data.reason, data.drinks)
     }
   }
 
@@ -158,6 +162,10 @@ export default class Match {
 
   isWaitingForInputFrom(id) {
     return this.waitingForInputFrom == id;
+  }
+
+  emitDrink(connection, reason, drinks) {
+    connection.emit('drinksReceived', { reason, drinks })
   }
 
   emitUnoUpdate(connection) {

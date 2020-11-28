@@ -59,7 +59,7 @@ export default class {
       this.getPlayer(playerId).selectedCardIndex = -1;
 
       if (this.currentPickupCount > 0) {
-        this.emit('drink', { name: this.getPlayer(playerId).name, drinks: this.currentPickupCount })
+        this.emit('drink', { player: this.getPlayer(playerId), reason: 'pickup', drinks: this.currentPickupCount })
         this.currentPickupCount = 0
       }
 
@@ -83,7 +83,7 @@ export default class {
       // check if the next player has the same card before giving it to them to allow stacking
       if (this.getPlayer(this.nextPlayer).hand.filter(playerCard => playerCard.type === card.type).length === 0) {
         this.draw(this.nextPlayer, (this.currentStack + 1) * 2)
-        this.emit('drink', { name: this.getPlayer(this.nextPlayer).name, drinks: (this.currentStack + 1) * 2})
+        this.emit('drink', { player: this.getPlayer(this.nextPlayer), reason: '+2', drinks: (this.currentStack + 1) * 2})
         this.currentStack = 0
         this.nextTurn(true, true);
       } else {
@@ -97,7 +97,7 @@ export default class {
         // check if the next player has the same card before giving it to them to allow stacking
         if (this.getPlayer(this.nextPlayer).hand.filter(playerCard => playerCard.type === card.type).length === 0) {
           this.draw(this.nextPlayer, (this.currentStack + 1)  * 4)
-          this.emit('drink', { name: this.getPlayer(this.nextPlayer).name, drinks: (this.currentStack + 1) * 4})
+          this.emit('drink', { player: this.getPlayer(this.nextPlayer), reason: '+4', drinks: (this.currentStack + 1) * 4})
           this.currentStack = 0
           this.nextTurn(true, true);
         } else {
@@ -112,14 +112,14 @@ export default class {
 
     if (card.type === '7') {
       if (this.checkWin()) {
-        return
+        return true;
       }
       this.emit('needPlayer')
       return true
     }
     if (card.type === '0') {
       if (this.checkWin()) {
-        return
+        return true;
       }
       this.rotateCards()
     }
@@ -134,6 +134,9 @@ export default class {
     const currentHand = clone(this.getPlayer(this.currentPlayer).hand)
     this.getPlayer(this.currentPlayer).hand = clone(this.getPlayer(playerId).hand)
     this.getPlayer(playerId).hand = currentHand
+
+    this.emit('drink', { player: this.getPlayer(playerId), reason: '7', drinks: this.getPlayer(playerId).hand.length })
+    this.emit('drink', { player: this.getPlayer(this.currentPlayer), reason: '7', drinks: this.getPlayer(this.currentPlayer).hand.length })
 
     this.nextTurn();
   }
@@ -155,6 +158,8 @@ export default class {
           useIndex = this.players.length - 1
         }
         this.players[index].hand = clone(hands[useIndex])
+
+        this.emit('drink', { player, reason: '0', drinks: this.players[index].hand.length })
       })
     } else {
       this.players.forEach((player, index) => {
@@ -164,6 +169,8 @@ export default class {
           useIndex = 0
         }
         this.players[index].hand = clone(hands[useIndex])
+
+        this.emit('drink', { player, reason: '0', drinks: this.players[index].hand.length })
       })
     }
   }
@@ -180,7 +187,7 @@ export default class {
 
       DeckBuilder.shuffleDeck(this.deck);
 
-      this.emit('drink', { name: this.getPlayer(this.currentPlayer).name, drinks: 'finish' })
+      this.emit('drink', { player: this.getPlayer(this.currentPlayer), reason: 'deck', drinks: 'finish' })
     }
 
     for(let i = 0; i < n; i++) {

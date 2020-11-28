@@ -1,8 +1,17 @@
 <template>
   <div class="game-container full-screen" :class="[currentColor]" v-if="uno != null">
+
     <ChatView :dark="true" :onClose="() => showChat = false" v-if="showChat" />
 
     <div class="game" ref="game">
+      <div class="fly-id-container" v-if="drinkMessage" @animationend="handleMessageAnimationEnd">
+        <div id="fly-in">
+          <div v-if="drinkMessage.reason === 'pickup'"><span>You picked up {{ drinkMessage.drinks }} card{{ drinkMessage.drinks > 1 ? 's': ''}}</span>Drink {{drinkMessage.drinks}}</div>
+          <div v-if="drinkMessage.reason === '+2' || drinkMessage.reason === '+4'"><span>You had to pick up {{ drinkMessage.drinks }} card{{ drinkMessage.drinks > 1 ? 's': ''}}</span>Drink {{drinkMessage.drinks}}</div>
+          <div v-if="drinkMessage.reason === '7' || drinkMessage.reason === '0'"><span>You received {{ drinkMessage.drinks }} card{{ drinkMessage.drinks > 1 ? 's': ''}}</span>Drink {{drinkMessage.drinks}}</div>
+        </div>
+      </div>
+
       <SpinBackground :direction="direction" />
 
       <OpponentDetailLayer :opponents="opponents" :currentPlayer="uno.currentPlayer" :players="uno.players" />
@@ -114,7 +123,9 @@ export default {
       showChat: this.$network.online,
       winnerName: '',
       showWinnerModal: false,
-      showLoserModal: false
+      showLoserModal: false,
+      drinkMessages: [],
+      drinkMessage: null
     }
   },
 
@@ -290,6 +301,20 @@ export default {
       else {
         this.$router.push({ path: '/lobby/offline/' });
       }
+    },
+
+    handleMessageAnimationEnd () {
+      this.drinkMessage = null
+
+      if (this.drinkMessages.length) {
+        this.$nextTick(() => {
+          this.showNextDrinkMessage()
+        })
+      }
+    },
+
+    showNextDrinkMessage () {
+      this.drinkMessage = this.drinkMessages.shift()
     }
   },
 
@@ -332,6 +357,13 @@ export default {
     },
     unoStateUpdate(unoState) {
       this.uno.remoteSetState(unoState);
+    },
+    drinksReceived(message) {
+      this.drinkMessages.push(message)
+
+      if (this.drinkMessage === null) {
+        this.showNextDrinkMessage()
+      }
     }
   }
 }
@@ -434,6 +466,66 @@ export default {
       p {
         margin: 8px 0;
       }
+    }
+  }
+
+  .fly-id-container {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: #fff;
+    text-align: center;
+    width: 100vw;
+    height: 100vh;
+    font-weight: 700;
+    overflow: hidden;
+    opacity: 0;
+    animation: background 6s linear;
+
+    #fly-in {
+      font-size: 4em;
+      margin: 40vh auto;
+      height: 20vh;
+      text-transform: uppercase;
+    }
+
+    #fly-in span {
+      display: block;
+      font-size: .4em;
+      opacity: .8;
+    }
+
+    #fly-in div {
+      position: fixed;
+      margin: 2vh 0;
+      opacity: 0;
+      left: 10vw;
+      width: 80vw;
+      animation: switch 6s linear;
+    }
+
+    @keyframes switch {
+      0% { opacity: 0;filter: blur(20px); transform:scale(12)}
+      20% { opacity: 1;filter: blur(0); transform:scale(1)}
+      60% { opacity: 1;filter: blur(0); transform:scale(.9)}
+      90% { opacity: 0;filter: blur(10px); transform:scale(.1)}
+      100% { opacity: 0}
+    }
+
+    @keyframes background {
+      0% { opacity: 0;}
+      20% { opacity: 1;}
+      60% { opacity: 0.8;}
+      90% { opacity: 0;}
     }
   }
 </style>
