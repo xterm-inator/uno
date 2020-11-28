@@ -7,6 +7,7 @@
       <div class="fly-id-container" v-if="drinkMessage" @animationend="handleMessageAnimationEnd">
         <div id="fly-in">
           <div v-if="drinkMessage.reason === 'pickup'"><span>You picked up {{ drinkMessage.drinks }} card{{ drinkMessage.drinks > 1 ? 's': ''}}</span>Drink {{drinkMessage.drinks}}</div>
+          <div v-if="drinkMessage.reason === 'deck'"><span>You finished the deck</span>Finish Your Drink</div>
           <div v-if="drinkMessage.reason === '+2' || drinkMessage.reason === '+4'"><span>You had to pick up {{ drinkMessage.drinks }} card{{ drinkMessage.drinks > 1 ? 's': ''}}</span>Drink {{drinkMessage.drinks}}</div>
           <div v-if="drinkMessage.reason === '7' || drinkMessage.reason === '0'"><span>You received {{ drinkMessage.drinks }} card{{ drinkMessage.drinks > 1 ? 's': ''}}</span>Drink {{drinkMessage.drinks}}</div>
         </div>
