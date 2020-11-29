@@ -1,7 +1,7 @@
 <template>
   <div class="game-container full-screen" :class="[currentColor]" v-if="uno != null">
 
-    <ChatView :dark="true" :onClose="() => showChat = false" v-if="showChat" />
+    <ChatView :dark="true" :players="uno.players" :current-player="uno.currentPlayer" />
 
     <div class="game" ref="game">
       <div class="fly-id-container" v-if="drinkMessage" @animationend="handleMessageAnimationEnd">

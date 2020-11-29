@@ -24,7 +24,8 @@ export default {
           human: player.human,
           id: player.id,
           name: player.name,
-          selectedCardIndex: player.selectedCardIndex
+          selectedCardIndex: player.selectedCardIndex,
+          drinks: player.drinks
         }
       }),
       stack: uno.stack
@@ -43,7 +44,8 @@ export default {
         id: player.id,
         name: player.name,
         selectedCardIndex: player.selectedCardIndex,
-        remote: uno.players[i].remote
+        remote: uno.players[i].remote,
+        drinks: player.drinks
       }
     });
     uno.stack = state.stack;
