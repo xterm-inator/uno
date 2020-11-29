@@ -1,10 +1,10 @@
 <template>
   <div class="chat-view" :class="{ dark: dark }">
-    <div class="chat-header">
+    <div class="chat-header" v-if="players">
 <!--      <h1>Players</h1> <font-awesome-icon icon="times-circle" size="2x" />-->
       <h1>Players</h1>
     </div>
-    <div class="players-box" >
+    <div class="players-box" v-if="players">
       <div v-for="(player, i) in players" :key="i" class="players">
         <font-awesome-icon v-show="player.id === currentPlayer" class="icon" icon="user" />
         <span class="player" :class="{ current: player.id === currentPlayer }">{{ player.name }}</span>
