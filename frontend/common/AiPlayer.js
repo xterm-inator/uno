@@ -68,7 +68,9 @@ export default {
   selectColor: function(hand) {
     const colorCounts = {};
     for(let card of hand) {
-      colorCounts[card.color] = colorCounts[card.color] + 1 || 1;
+      if (card.color !== 'special') {
+        colorCounts[card.color] = colorCounts[card.color] + 1 || 1;
+      }
     }
 
     let max = 0;
