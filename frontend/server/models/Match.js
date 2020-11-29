@@ -104,7 +104,8 @@ export default class Match {
           uno.topStack,
           setSelectedCard,
           drawCard,
-          chooseCard
+          chooseCard,
+          uno.currentStack > 0
         );
       }
     } else if (event === 'drink') {

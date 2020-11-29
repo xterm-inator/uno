@@ -8,7 +8,7 @@ export default {
     selectDelay: 250
   },
   // Make a move procedurally, enabling pretty animations
-  makeMove: function(hand, manualColor, topCard, setSelectedCard, drawCard, chooseCard) {
+  makeMove: function(hand, manualColor, topCard, setSelectedCard, drawCard, chooseCard, hasStack) {
     const validIndices = [];
     const preferredIndices = [];
 
@@ -29,7 +29,7 @@ export default {
     const searchStep = i => () => {
       setSelectedCard(i);
 
-      if(i < hand.length && Rules.isLegal(topCard, manualColor, hand[i])) {
+      if(i < hand.length && Rules.isLegal(topCard, manualColor, hand[i], hasStack)) {
         validIndices.push(i);
 
         if(hand[i].color != 'special') {
