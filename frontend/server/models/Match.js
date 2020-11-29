@@ -115,7 +115,7 @@ export default class Match {
         this.sendMessage('Server', 'notification', `${data.player.name} drinks ${data.drinks}`)
       }
 
-      data.player.drinks += data.drinks
+      data.player.drinks += data.drinks === 'finish' ? 10 : data.drinks
 
       this.emitDrink(this.getPlayer(data.player.id).player, data.reason, data.drinks)
     }
