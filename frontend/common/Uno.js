@@ -63,6 +63,9 @@ export default class {
         this.currentPickupCount = 0
       }
 
+      // check for win before continuing
+      if (this.checkWin()) return;
+
       if(this.playSideEffects(playerId, card) === true) return;
 
       this.nextTurn();
@@ -111,16 +114,10 @@ export default class {
     }
 
     if (card.type === '7') {
-      if (this.checkWin()) {
-        return true;
-      }
       this.emit('needPlayer')
       return true
     }
     if (card.type === '0') {
-      if (this.checkWin()) {
-        return true;
-      }
       this.rotateCards()
     }
   }
