@@ -173,21 +173,24 @@ export default class {
   }
 
   draw (playerId, n = 1) {
-    if(this.deck.length < n) {
-      for(let i = 0; i < this.secondaryDeck.length; i++) {
-        this.deck.unshift(clone(this.secondaryDeck[i]));
+    for(let i = 0; i < n; i++) {
+      /*
+       * Check if the deck is empty and if so reshuffle
+       */
+      if(this.deck.length === 0) {
+        for(let i = 0; i < this.secondaryDeck.length; i++) {
+          this.deck.unshift(clone(this.secondaryDeck[i]));
+        }
+
+        this.secondaryDeck = []
+
+        this.stack.splice(1, this.stack.length - 1)
+
+        DeckBuilder.shuffleDeck(this.deck);
+
+        this.emit('drink', { player: this.getPlayer(playerId), reason: 'deck', drinks: 'finish' })
       }
 
-      this.secondaryDeck = []
-
-      this.stack.splice(1, this.stack.length - 1)
-
-      DeckBuilder.shuffleDeck(this.deck);
-
-      this.emit('drink', { player: this.getPlayer(this.currentPlayer), reason: 'deck', drinks: 'finish' })
-    }
-
-    for(let i = 0; i < n; i++) {
       const drawIndex = Math.floor(Math.random() * this.deck.length);
       let card = this.deck[drawIndex]
       card.pickedUp = true
