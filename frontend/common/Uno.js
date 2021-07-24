@@ -46,7 +46,7 @@ export default class {
   }
 
   getPlayer(playerId) {
-    return this.players.filter(player => player.id == playerId)[0] || {};
+    return this.players.filter(player => player.id === playerId)[0] || {};
   }
 
   playCard(playerId, card) {

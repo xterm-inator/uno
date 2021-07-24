@@ -13,11 +13,11 @@ export default {
       return card.type === topCard.type
     }
 
-    if(topCard.color == 'special') {
-      return card.color == 'special' || card.color == manualColor;
+    if(topCard.color === 'special') {
+      return card.color === 'special' || card.color === manualColor;
     }
     else {
-      return card.color == 'special' || topCard.type == card.type || topCard.color == card.color;
+      return card.color === 'special' || topCard.type === card.type || topCard.color === card.color;
     }
   },
 

@@ -33,11 +33,11 @@ export default {
 
   // Creates a card with a given color and type
   createCard: function(color, type) {
-    if(this.validColors.indexOf(color) == -1) {
+    if(this.validColors.indexOf(color) === -1) {
       throw 'Invalid card color ' + color;
     }
 
-    if(this.validTypes.indexOf(type) == -1) {
+    if(this.validTypes.indexOf(type) === -1) {
       throw 'Invalid card type ' + type;
     }
 
@@ -101,7 +101,7 @@ export default {
   },
 
   equals(a, b) {
-    return a && b && a.color == b.color && a.type == b.type;
+    return a && b && a.color === b.color && a.type === b.type;
   },
 
   indexOf(hand, card) {
