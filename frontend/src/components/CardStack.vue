@@ -7,7 +7,7 @@
       :animateDisabled="true"
       :color="card.color"
       :type="card.type"
-      :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(i, stack.length) + ') translate(-100%, -50%)' }"
+      :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(i, stack.length) + ') translate(-35%, -50%)' }"
     />
   </div>
 </template>
@@ -40,7 +40,7 @@
 <style lang="scss" scoped>
   .stack {
     position: absolute;
-    left: 45%;
+    left: 40%;
     top: 50%;
     transform: translate(-50%, -50%);
 
