@@ -32,20 +32,27 @@ export default {
       if(i < hand.length && Rules.isLegal(topCard, manualColor, hand[i], hasStack)) {
         validIndices.push(i);
 
-        if(hand[i].color != 'special') {
+        if(hand[i].color !== 'special') {
           preferredIndices.push(i);
         }
       }
 
-      if(i == hand.length - 1 && validIndices.length == 0) {
-        drawCard();
-        setTimeout(searchStep(i + 1), this.animationConfig.searchDelay);
+      let searchDelay = this.animationConfig.searchDelay
+
+      if (hand.length > 7) {
+        // Set the animation time based on hand size
+        searchDelay -= ((hand.length-7) * 5)
       }
-      else if(i == hand.length - 1 && validIndices.length > 0) {
-        setTimeout(selectStep, this.animationConfig.searchDelay);
+
+      if(i === hand.length - 1 && validIndices.length === 0) {
+        drawCard();
+        setTimeout(searchStep(i + 1), searchDelay);
+      }
+      else if(i === hand.length - 1 && validIndices.length > 0) {
+        setTimeout(selectStep, searchDelay);
       }
       else {
-        setTimeout(searchStep(i + 1), this.animationConfig.searchDelay);
+        setTimeout(searchStep(i + 1), searchDelay);
       }
     }
 
@@ -54,7 +61,7 @@ export default {
   // Returns a card to play given a player's hand, the manualColor of the field, and the topCard of the field
   makeMoveBasic: function(deck, manualColor, topCard) {
     let validMoves = deck.filter(card => Rules.isLegal(topCard, manualColor, card));
-    let preferredMoves = validMoves.filter(card => card.type != 'special');
+    let preferredMoves = validMoves.filter(card => card.type !== 'special');
     if(preferredMoves.length > 0) {
       return this.chooseRandom(preferredMoves);
     }
