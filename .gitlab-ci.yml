@@ -23,10 +23,6 @@ docker-build:
     - docker build --pull -f frontend/Dockerfile.prod  -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" frontend
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   except:
-  - master
-stages:
-  - test
-sast:
-  stage: test
+    - master
 include:
   - template: Security/SAST.gitlab-ci.yml
