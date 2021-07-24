@@ -8,26 +8,25 @@ docker-build-master:
   image: docker:latest
   stage: build
   services:
-  - docker:dind
+    - docker:dind
   script:
-  - docker build -f frontend/Dockerfile.prod -t "$CI_REGISTRY_IMAGE" frontend
-  - docker push "$CI_REGISTRY_IMAGE"
+    - docker build -f frontend/Dockerfile.prod -t "$CI_REGISTRY_IMAGE" frontend
+    - docker push "$CI_REGISTRY_IMAGE"
   only:
-  - master
+    - master
 docker-build:
   image: docker:latest
   stage: build
   services:
-  - docker:dind
+    - docker:dind
   script:
-  - docker build --pull -f frontend/Dockerfile.prod  -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    frontend
-  - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    - docker build --pull -f frontend/Dockerfile.prod  -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" frontend
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   except:
   - master
 stages:
-- test
+  - test
 sast:
   stage: test
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
