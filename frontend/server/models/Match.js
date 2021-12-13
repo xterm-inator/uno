@@ -46,7 +46,7 @@ export default class Match {
   }
 
   isEmpty() {
-    return this.players.filter(player => player.human && !player.open).length == 0;
+    return this.players.filter(player => player.human && !player.open).length === 0;
   }
 
   isRunning() {
@@ -62,24 +62,24 @@ export default class Match {
   }
 
   onGameEmit(event, data) {
-    if(event == 'needColor' && this.getCurrentPlayer().human) {
+    if(event === 'needColor' && this.getCurrentPlayer().human) {
       this.waitingForInputFrom = this.getCurrentPlayer().player.getId();
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
-    } else if(event == 'needColor' && !this.getCurrentPlayer().human) {
+    } else if(event === 'needColor' && !this.getCurrentPlayer().human) {
       this.onUserSelectColor(AiPlayer.selectColor(this.getUno().getPlayer(this.getUno().currentPlayer).hand));
-    } else if(event == 'needPlayer' && this.getCurrentPlayer().human) {
+    } else if(event === 'needPlayer' && this.getCurrentPlayer().human) {
       this.waitingForInputFrom = this.getCurrentPlayer().player.getId();
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
-    } else if(event == 'needPlayer' && !this.getCurrentPlayer().human) {
+    } else if(event === 'needPlayer' && !this.getCurrentPlayer().human) {
       this.onUserSelectPlayer(AiPlayer.selectPlayer(this.getUno().getPlayers()));
-    } else if(event == 'win') {
+    } else if(event === 'win') {
       this.emitAll('onWin', data);
       this.emitUnoUpdateAll();
     } else if (event === 'draw') {
       this.emitUnoUpdateAll();
-    } else if(event == 'nextTurn') {
+    } else if(event === 'nextTurn') {
       if(!this.getCurrentPlayer().human) {
         const uno = this.getUno();
         const player = uno.getPlayer(uno.currentPlayer);
@@ -154,7 +154,7 @@ export default class Match {
   }
 
   isPlayerTurn(id) {
-    return this.getUno().currentPlayer == id;
+    return this.getUno().currentPlayer === id;
   }
 
   isWaitingForUserInput() {
@@ -162,7 +162,7 @@ export default class Match {
   }
 
   isWaitingForInputFrom(id) {
-    return this.waitingForInputFrom == id;
+    return this.waitingForInputFrom === id;
   }
 
   emitDrink(connection, reason, drinks) {
@@ -220,7 +220,7 @@ export default class Match {
   removePlayer(playerId) {
     const result = this.players
       .map((player, index) => { return { ...player, index: index }})
-      .filter(player => player.player && player.player.getId() == playerId)[0];
+      .filter(player => player.player && player.player.getId() === playerId)[0];
 
     if(result) {
       this.removePlayerAtIndex(result.index);
@@ -244,7 +244,7 @@ export default class Match {
         Match.remove(this.id);
       }
 
-      if(this.getAdmins().length == 0) {
+      if(this.getAdmins().length === 0) {
         this.players.filter(player => player.human)[0].admin = true;
       }
 
@@ -261,17 +261,17 @@ export default class Match {
   getFirstOpenSpace() {
     const res = this.players
       .map((player, i) => { return { open: player.open, i: i }})
-      .filter(player => player.open == true)
+      .filter(player => player.open === true)
       .map(player => player.i)[0];
     return typeof res ==='undefined' ? -1 : res;
   }
 
   hasPlayer(connection) {
-    return this.players.filter(player => player.player && player.player.getId() == connection.getId()).length > 0;
+    return this.players.filter(player => player.player && player.player.getId() === connection.getId()).length > 0;
   }
 
   getPlayer(playerId) {
-    return this.players.filter(player => player.player && player.player.getId() == playerId)[0];
+    return this.players.filter(player => player.player && player.player.getId() === playerId)[0];
   }
 
   getAdmins() {
@@ -281,7 +281,7 @@ export default class Match {
   }
 
   hasSpace() {
-    return this.getFirstOpenSpace() != -1;
+    return this.getFirstOpenSpace() !== -1;
   }
 
   rename(newName) {
@@ -309,11 +309,11 @@ export default class Match {
   }
 
   static remove(id) {
-    matches = matches.filter(match => match.getId() != id);
+    matches = matches.filter(match => match.getId() !== id);
   }
 
   static matchExists(id) {
-    return matches.filter(match => match.getId() == id).length > 0;
+    return matches.filter(match => match.getId() === id).length > 0;
   }
 
   static getOpenMatches() {
@@ -323,6 +323,8 @@ export default class Match {
   }
 
   static getMatch(id) {
-    return matches.filter(match => match.getId() == id)[0];
+    return matches.filter(match => match.getId() === id)[0];
   }
 }
+
+

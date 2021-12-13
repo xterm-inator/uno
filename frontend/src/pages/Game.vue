@@ -37,8 +37,8 @@
             :color="card.color"
             :type="card.type"
             :animateIn="true"
-            :animateDisabled="i != removeIndex && removing"
-            :animateRemoving="i == removeIndex"
+            :animateDisabled="i !== removeIndex && removing"
+            :animateRemoving="i === removeIndex"
             :hoverFocus="true"
             :shrinkAmount="shrinkAmountPx"
             padding="32px" />
@@ -167,7 +167,7 @@ export default {
   computed: {
     currentColor() {
       if(this.uno.topStack == null) return '';
-      if(this.uno.topStack.color != 'special') {
+      if(this.uno.topStack.color !== 'special') {
         return this.uno.topStack.color;
       }
       return this.uno.manualColor || 'special';
@@ -181,7 +181,7 @@ export default {
       return this.uno.currentPlayer;
     },
     playerTurn() {
-      return this.currentPlayer == this.playerId;
+      return this.currentPlayer === this.playerId;
     },
     direction() {
       return this.uno.boardDirection;
@@ -192,11 +192,11 @@ export default {
       // Order players so that player is at index 0
       // Otherwise, positions on the board are out-of-order.
       const players = this.uno.getPlayers().slice();
-      while(players[0].id != this.playerId) {
+      while(players[0].id !== this.playerId) {
         players.push(players.shift()); // rotate one step
       }
 
-      return players.filter(player => player.id != this.playerId);
+      return players.filter(player => player.id !== this.playerId);
     },
     compressed() {
       return 180 * this.playerHand.length > this.windowWidth;
@@ -260,7 +260,7 @@ export default {
         alert('That is not a valid move.');
         return;
       }
-      if(this.removeIndex == -1) {
+      if(this.removeIndex === -1) {
         this.removeIndex = i;
         this.removing = true;
         setTimeout(() => {
@@ -324,7 +324,7 @@ export default {
       console.log('Error from server: ' + text);
     },
     onWin(playerId) {
-      if(playerId == this.playerId) {
+      if(playerId === this.playerId) {
         this.showWinnerModal = true;
       }
       else {
@@ -523,10 +523,18 @@ export default {
     }
 
     @keyframes background {
-      0% { opacity: 0;}
-      20% { opacity: 1;}
-      60% { opacity: 0.8;}
-      90% { opacity: 0;}
+      0% {
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      60% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0;
+      }
     }
   }
 </style>

@@ -22,7 +22,7 @@
     },
     computed: {
       typeDisplay() {
-        if(this.type == 'wild+4') {
+        if(this.type === 'wild+4') {
           return '+4';
         }
         if(this.typeDisplayHasSvg) {
@@ -31,7 +31,7 @@
         return this.type;
       },
       typeDisplayHasSvg() {
-        return this.typeSpecials.indexOf(this.type) != -1;
+        return this.typeSpecials.indexOf(this.type) !== -1;
       },
       swooshDisplay() {
         if(this.swooshHasSvg) {
@@ -40,7 +40,7 @@
         return this.type;
       },
       swooshHasSvg() {
-        return this.swooshSpecials.indexOf(this.type) != -1;
+        return this.swooshSpecials.indexOf(this.type) !== -1;
       },
       selectableClass() {
         return this.selectable === false ? 'no-select' : 'selectable';
@@ -96,7 +96,7 @@
     &.no-animate {
       transition: all 0ms;
     }
-    
+
     // Handled by Vue:
     &.list-enter {
       opacity: 0;

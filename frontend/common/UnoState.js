@@ -16,7 +16,7 @@ export default {
       deck: this.default.generateHandWithLength(uno.deck.length),
       manualColor: uno.manualColor,
       players: uno.players.map(player => {
-        const mask = playerId != player.id;
+        const mask = playerId !== player.id;
         return {
           hand: mask ?
             this.default.generateHandWithLength(player.hand.length) :
