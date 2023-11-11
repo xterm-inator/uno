@@ -1,5 +1,10 @@
 # uno
 
+### Forked from
+https://github.com/andreybutenko/uno
+
+This was a project I worked on for me and some mates when covid hit. 
+
 ## Project setup
 ```
 npm install
