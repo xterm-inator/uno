@@ -1,4 +1,4 @@
-# uno
+# Drinking uno
 
 This was a project I worked on for me and some mates when covid hit. 
 
